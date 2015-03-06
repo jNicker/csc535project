@@ -1,28 +1,10 @@
-== README
+Some setup you must do manually if you haven't yet:
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+  1. Ensure you have defined default url options in your environments files. Here
+     is an example of default_url_options appropriate for a development environment
+     in config/environments/development.rb:
 
-Things you may want to cover:
+       config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 
-* Ruby version
+     In production, :host should be set to the actual host of your application.
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
