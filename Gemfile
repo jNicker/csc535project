@@ -4,7 +4,7 @@ gem 'rails', '4.2.0'
 gem 'devise'
 gem 'pg'
 gem 'jbuilder', '~> 2.0'
-gem 'simple_form'
+gem 'simple_form', github: 'plataformatec/simple_form', ref: '1be4d64ce16d29c316e2d6c297ed7be248126057'
 gem 'faye-rails'
 gem 'thin'
 # bundle exec rake doc:rails generates the API under doc/api.

@@ -45,24 +45,25 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">Csc535project</a>
+        <a class="navbar-brand" href="/">Csc535project</a>
         <div class="navbar-collapse collapse navbar-responsive-collapse">
-          <ul class="nav navbar-nav">
-            <li><%= link_to "Link1", "/path1"  %></li>
-            <li><%= link_to "Link2", "/path2"  %></li>
-            <li><%= link_to "Link3", "/path3", class: 'navbar-right' %></li>
-          </ul>
+          <% if current_user %>
+            <ul class="nav navbar-nav navbar-right">
+              <li><%= link_to current_user.username, edit_user_registration_path %></li>
+              <li><%= link_to 'Sign Out', destroy_user_session_path, :method => :delete %></li>
+            </ul>
+          <% end %>
         </div>
       </div>
     </div>
 
     <div class="container">
       <div class="row">
-        <div class="col-lg-9">
+        <div class="col-lg-12">
           <%= bootstrap_flash %>
           <%= yield %>
         </div>
-        <div class="col-lg-3">
+        <!-- <div class="col-lg-3">
           <div class="well sidebar-nav">
             <h3>Sidebar</h3>
             <ul class="nav nav-list">
@@ -75,10 +76,10 @@
         </div><!--/span-->
       </div><!--/row-->
 
-      <footer>
+<!--       <footer>
         <p>&copy; Company 2015</p>
       </footer>
-
+ -->
     </div> <!-- /container -->
 
   </body>
