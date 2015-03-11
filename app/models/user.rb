@@ -14,9 +14,24 @@ class User < ActiveRecord::Base
   validates_presence_of :password, if: :password_required?
   validates_confirmation_of :password, if: :password_required?
   validates_length_of :password, within: Devise.password_length, allow_blank: true
-  validates_format_of :password, with: /\A(?=.*?[#?!@$%^&*-]).{8,}\z/, message: 'is missing required characters #,?,!,@,$,%,^,&,*,-'
-  validates_format_of :password, with: /\A(?=.*?[A-Z]).{8,}\z/, message: 'is missing at least one uppercase character'
-  validates_format_of :password, with: /\A(?=.*?[0-9]).{8,}\z/, message: 'is missing at least one digit'
+  validates_format_of :password, with: /\A(?=.*?[#?!@$%^&*-]).{8,}\z/, message: 'is missing required characters #,?,!,@,$,%,^,&,*,-', if: :password_required?
+  validates_format_of :password, with: /\A(?=.*?[A-Z]).{8,}\z/, message: 'is missing at least one uppercase character', if: :password_required?
+  validates_format_of :password, with: /\A(?=.*?[0-9]).{8,}\z/, message: 'is missing at least one digit', if: :password_required?
+
+  has_and_belongs_to_many :chats
+
+  scope :without_user, ->(user) { where.not(id: user) }
+
+  scope :online, -> { where(last_seen: (30.minutes.ago)..Time.now) }
+
+  def stamp!
+    if persisted?
+      if self.last_seen.to_i < (Time.now - 5.minutes).to_i
+        self.last_seen = DateTime.now
+        self.save!
+      end
+    end
+  end
 
   protected
 

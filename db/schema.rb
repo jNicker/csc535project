@@ -11,10 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150307004445) do
+ActiveRecord::Schema.define(version: 20150311010725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "chats", force: :cascade do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "chats_users", id: false, force: :cascade do |t|
+    t.integer "chat_id"
+    t.integer "user_id"
+  end
+
+  add_index "chats_users", ["chat_id"], name: "index_chats_users_on_chat_id", using: :btree
+  add_index "chats_users", ["user_id"], name: "index_chats_users_on_user_id", using: :btree
 
   create_table "homes", force: :cascade do |t|
     t.string   "body"
@@ -22,8 +35,20 @@ ActiveRecord::Schema.define(version: 20150307004445) do
     t.datetime "updated_at"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.text     "body"
+    t.integer  "chat_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "messages", ["chat_id"], name: "index_messages_on_chat_id", using: :btree
+  add_index "messages", ["user_id"], name: "index_messages_on_user_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "username",               default: "", null: false
+    t.datetime "last_seen"
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
     t.string   "reset_password_token"

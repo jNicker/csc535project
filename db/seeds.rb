@@ -5,3 +5,19 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+user_infos = [
+  { username: 'testuser', email: 'testuser@example.com', password: '!1Abcdef' },
+  { username: 'testuser1', email: 'testuser1@example.com', password: '!1Abcdef' },
+  { username: 'testuser2', email: 'testuser2@example.com', password: '!1Abcdef' }
+]
+user_infos.each do |user_info|
+  @user = User.new(user_info)
+  @user.skip_confirmation!
+  @user.save!
+end
+
+@chat = User.first.chats.create
+User.without_user(User.first).each do |user|
+  @chat.users << user
+end
