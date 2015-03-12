@@ -1,17 +1,6 @@
-<%= form_for(@example) do |f| %>
-  <% if @example.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@example.errors.count, "error") %> prohibited this example from being saved:</h2>
+<%= simple_form_for @example, :html => { :class => 'form-horizontal' } do |f| %>
 
-      <ul>
-      <% @example.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+  <%= f.button :submit, :class => 'btn-primary' %>
+  <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                examples_path, :class => 'btn btn-default' %>
 <% end %>

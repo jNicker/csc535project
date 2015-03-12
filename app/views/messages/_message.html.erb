@@ -1,0 +1,6 @@
+<li class='media'>
+  <div class='media-body'>
+    <%= message.user.username %>: <%= message.body %>
+    <small class='text-muted'> <%= time_ago_in_words(message.created_at) %> ago </small>
+  </div>
+</li>

@@ -16,8 +16,13 @@ gem 'jquery-rails'
 gem 'therubyracer', platforms: :ruby
 gem 'less-rails'
 gem 'twitter-bootstrap-rails'
+gem 'chosen-rails'
+gem 'sass-rails'
 
 group :development, :test do
+  gem 'pry'
+  gem 'pry-nav'
+  gem 'pry-doc'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   # Access an IRB console on exception pages or by using <%= console %> in views

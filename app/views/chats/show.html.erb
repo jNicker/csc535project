@@ -1,0 +1,59 @@
+<div class='panel panel-default'>
+  <div class='panel-heading'>
+    <%= @chat.users.without_user(current_user).pluck(:username).join(', ') %>
+  </div>
+  <div class='panel-body' style="height: 500px; overflow-y: scroll">
+    <ul class='media-list'>
+      <% @chat.messages.each do |message| %>
+        <li class='media'>
+          <div class='media-body'>
+            <%= message.user.username %>: <%= message.body %>
+            <small class='text-muted'> <%= time_ago_in_words(message.created_at) %> ago </small>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+<%= simple_form_for @new_message, remote: true do |f| %>
+    <div class="form-group">
+<!--       <%= f.label :body, 'Enter your comment:' %> -->
+      <%= f.text_field :body, rows: 3, class: 'form-control', required: true, maxlength: 2000 %>
+      <%= f.input :chat_id, as: :hidden %>
+      <%= f.input :user_id, as: :hidden %>
+      <!-- <small class="label label-warning">Cannot be blank or contain more than 2000 symbols.</small> -->
+    </div>
+    <%= f.submit 'Send', class: 'btn btn-primary' %>
+  <% end %>
+
+<%= javascript_tag do %>
+  window.client = new Faye.Client('/faye');
+  client.addExtension({
+    outgoing: function(message, callback) {
+      message.ext = message.ext || {};
+      message.ext.csrfToken = $('meta[name=csrf-token]').attr('content');
+      return callback(message);
+    }
+  });
+
+  $(function() {
+    $('.panel-body').animate({ scrollTop: $('.panel-body')[0].scrollHeight}, 1000);
+    $('#new_message').submit(function() {
+      return $(this).find("input[type='submit']").val('Sending...').prop('disabled', true);
+    });
+    try {
+      client.unsubscribe('/chats/<%= @chat.id %>');
+    }
+    catch (_error) {
+      if (typeof console !== "undefined" && console !== null) {
+        console.log("Can't unsubscribe.");
+      }
+    }
+    client.subscribe('/chats/<%= @chat.id %>', function(payload) {
+      if (payload.message) {
+        $('.media-list').append(payload.message);
+        $('.panel-body').animate({ scrollTop: $('.panel-body')[0].scrollHeight}, 1000);
+      }
+    });
+  });
+<% end %>

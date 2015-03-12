@@ -20,6 +20,8 @@ class User < ActiveRecord::Base
 
   has_and_belongs_to_many :chats
 
+  has_many :messages, dependent: :destroy
+
   scope :without_user, ->(user) { where.not(id: user) }
 
   scope :online, -> { where(last_seen: (30.minutes.ago)..Time.now) }

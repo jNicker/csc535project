@@ -1,3 +1,4 @@
+###
 window.client = new Faye.Client('/faye')
 
 client.addExtension {
@@ -18,3 +19,4 @@ jQuery ->
 
   client.subscribe '/global', (payload) ->
     $('#global_chat').prepend(payload.message) if payload.message
+###

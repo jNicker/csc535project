@@ -1,0 +1,12 @@
+publisher = client.publish('/chats/<%= @chat.id %>', {
+  message: '<%= j render @message %>'
+});
+
+publisher.callback(function() {
+  $('#message_body').val('');
+  $('#new_message').find("input[type='submit']").val('Send').prop('disabled', false);
+});
+
+publisher.errback(function() {
+  alert('There was and error sending your message.');
+})
