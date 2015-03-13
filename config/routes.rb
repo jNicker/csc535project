@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :home, only: [:index]
+  resources :home, only: [:index, :create]
   resources :welcome, only: [:index]
   resources :messages
   resources :chats

@@ -1,6 +1,7 @@
 class Chat < ActiveRecord::Base
   has_many :messages
-  has_and_belongs_to_many :users
+  has_many :chat_users, validate: true
+  has_many :users, -> { uniq }, through: :chat_users, validate: true
 
   validate :validate_user_count
 

@@ -11,23 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150311010725) do
+ActiveRecord::Schema.define(version: 20150313025441) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "chat_users", force: :cascade do |t|
+    t.integer "chat_id"
+    t.integer "user_id"
+  end
+
+  add_index "chat_users", ["chat_id", "user_id"], name: "index_chat_users_on_chat_id_and_user_id", unique: true, using: :btree
+  add_index "chat_users", ["chat_id"], name: "index_chat_users_on_chat_id", using: :btree
+  add_index "chat_users", ["user_id"], name: "index_chat_users_on_user_id", using: :btree
 
   create_table "chats", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "chats_users", id: false, force: :cascade do |t|
-    t.integer "chat_id"
-    t.integer "user_id"
-  end
-
-  add_index "chats_users", ["chat_id"], name: "index_chats_users_on_chat_id", using: :btree
-  add_index "chats_users", ["user_id"], name: "index_chats_users_on_user_id", using: :btree
 
   create_table "homes", force: :cascade do |t|
     t.string   "body"

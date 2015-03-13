@@ -1,6 +1,10 @@
 <li class='media'>
+  <span class='media-object pull-left'>
+    <%= link_to message.user.username, user_path(message.user) %>
+  </span>
   <div class='media-body'>
-    <%= message.user.username %>: <%= message.body %>
-    <small class='text-muted'> <%= time_ago_in_words(message.created_at) %> ago </small>
+     <%= message.body %>
+    <small class='text-muted pull-right'> <%= message.created_at ? time_ago_in_words(message.created_at) : time_ago_in_words(Time.now) %> ago </small>
   </div>
+  <hr/>
 </li>

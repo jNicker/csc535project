@@ -5,19 +5,13 @@
   <div class='panel-body' style="height: 500px; overflow-y: scroll">
     <ul class='media-list'>
       <% @chat.messages.each do |message| %>
-        <li class='media'>
-          <div class='media-body'>
-            <%= message.user.username %>: <%= message.body %>
-            <small class='text-muted'> <%= time_ago_in_words(message.created_at) %> ago </small>
-          </div>
-        </li>
+        <%= render message %>
       <% end %>
     </ul>
   </div>
 </div>
 <%= simple_form_for @new_message, remote: true do |f| %>
     <div class="form-group">
-<!--       <%= f.label :body, 'Enter your comment:' %> -->
       <%= f.text_field :body, rows: 3, class: 'form-control', required: true, maxlength: 2000 %>
       <%= f.input :chat_id, as: :hidden %>
       <%= f.input :user_id, as: :hidden %>
@@ -37,7 +31,7 @@
   });
 
   $(function() {
-    $('.panel-body').animate({ scrollTop: $('.panel-body')[0].scrollHeight}, 1000);
+    //$('.panel-body').animate({ scrollTop: $('.panel-body')[0].scrollHeight}, 1000);
     $('#new_message').submit(function() {
       return $(this).find("input[type='submit']").val('Sending...').prop('disabled', true);
     });
@@ -51,8 +45,8 @@
     }
     client.subscribe('/chats/<%= @chat.id %>', function(payload) {
       if (payload.message) {
-        $('.media-list').append(payload.message);
-        $('.panel-body').animate({ scrollTop: $('.panel-body')[0].scrollHeight}, 1000);
+        $('.media-list').prepend(payload.message);
+        //$('.panel-body').animate({ scrollTop: $('.panel-body')[0].scrollHeight}, 1000);
       }
     });
   });

@@ -15,9 +15,12 @@ class ChatsController < ApplicationController
   end
 
   def create
+    chat_params[:user_ids] << current_user.id if chat_params[:user_ids] && !chat_params[:user_ids].include?(current_user.id)
     @chat = Chat.new(chat_params)
-    @chat.users << current_user
     respond_to do |format|
+      #if @chat.persisted?
+        # format.html { redirect_to @chat, notice: 'Chat already existed' }
+        # format.json { render :show, status: :created, location: @chat}
       if @chat.save
         format.html { redirect_to @chat, notice: 'Chat was successfully created.' }
         format.json { render :show, status: :created, location: @chat }

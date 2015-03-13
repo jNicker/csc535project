@@ -18,7 +18,8 @@ class User < ActiveRecord::Base
   validates_format_of :password, with: /\A(?=.*?[A-Z]).{8,}\z/, message: 'is missing at least one uppercase character', if: :password_required?
   validates_format_of :password, with: /\A(?=.*?[0-9]).{8,}\z/, message: 'is missing at least one digit', if: :password_required?
 
-  has_and_belongs_to_many :chats
+  has_many :chat_users
+  has_many :chats, through: :chat_users
 
   has_many :messages, dependent: :destroy
 
