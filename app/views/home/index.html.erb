@@ -1,62 +1,64 @@
+<% if current_user %>
+  <%= javascript_tag do %>
+    var this_user = <%= raw @this_user.to_json %>;
+    var online_users = <%= raw @online_users.to_json %>;
+  <% end %>
+<% end %>
 <div class='row'>
 
-  <div class='col-md-6'>
+  <div class='col-sm-4'>
     <div class='panel panel-default'> <!-- Whos Online -->
       <div class='panel-heading'>
         Who's Online
       </div>
       <div class='panel-body'>
-        <%=  @logged_in_users.pluck(:username, :id).map { |username, id| "#{link_to(username, user_path(id))}" }.join(', ').html_safe %>
-      </div>
-    </div>
-    <div class='panel panel-default'> <!-- Ongoing Chats -->
-      <div class='panel-heading'>
-        Your Conversations
-      </div>
-      <div class='panel-body'>
-        <table class='table table-striped table-condensed'>
-          <thead>
-            <tr>
-              <th>with</th>
-              <th>updated</th>
-              <th>created</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @chats.each do |chat| %>
-              <tr>
-                <td><%= link_to chat.users.without_user(current_user).pluck(:username).join(', '), chat %></td>
-                <td><%= time_ago_in_words(chat.updated_at) %> ago</td>
-                <td><%= time_ago_in_words(chat.created_at) %> ago</td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
-      <div class='panel-footer'>
-        <%= link_to 'New Chat', new_chat_path, class: 'btn btn-primary btn-block' %>
+        <ul class='list-group' data-bind='foreach: online_users'>
+          <li class='list-group-item' data-bind='css: { disabled: is_available() == false } '>
+            <div class='clearfix'>
+              <span data-bind='text: username'></span>
+              <span class='pull-right'>
+                <a href='#' class='btn btn-default btn-xs'>
+                  Email
+                  <span class='glyphicon glyphicon-envelope'></span>
+                </a>
+                <a href='#' class='btn btn-default btn-xs' data-bind='click: $parent.startLocalChat, css: { disabled: is_available() == false } '>
+                  Chat
+                  <span class='glyphicon glyphicon-pencil'></span>
+                </a>
+              </span>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
 
 
 
-  <div class='col-md-6'>
-    <div class='panel panel-default'> <!-- Global Chat -->
+  <div class='col-sm-8'>
+    <div class='panel panel-default' data-bind="visible: current_user().is_available() === false"> <!-- Chat -->
       <div class='panel-heading'>
-        Global Chat
+        <span data-bind='text: to_user_name'></span>
+        <span class='glyphicon glyphicon-remove-sign pull-right' data-bind='click: $root.stopLocalChat'></span>
       </div>
       <div class='panel-body' style="height: 300px; overflow-y: scroll">
-        <ul class='media-list'>
+        <ul class='media-list' data-bind='foreach: messages'>
+          <li class='media'>
+            <span class='media-object pull-left' data-bind='text: from_user'>
+            </span>
+            <div class='media-body'>
+              <span data-bind='text: body'></span>
+              <small class='text-muted pull-right' data-bind='text: time_ago'></small>
+            </div>
+            <hr/>
+          </li>
         </ul>
       </div>
       <div class='panel-footer'>
         <%= simple_form_for @new_message, url: home_index_path, remote: true do |f| %>
-          <div class="form-group">
-            <%= f.text_field :body, rows: 3, class: 'form-control', required: true, maxlength: 2000 %>
-            <%= f.input :user_id, as: :hidden %>
-          <!-- <small class="label label-warning">Cannot be blank or contain more than 2000 symbols.</small> -->
-          </div>
+          <input type='hidden' name='message[from_user]' data-bind='value: current_user().id'/>
+          <input type='hidden' name='message[to_user]' data-bind='value: to_user_id' />
+          <%= f.text_field :body, class: 'form-control', required: true, maxlength: 2000 %>
           <%= f.submit 'Send', class: 'btn btn-primary' %>
         <% end %>
       </div>
@@ -65,35 +67,4 @@
 
 </div>
 
-<%= javascript_tag do %>
-  window.client = new Faye.Client('/faye');
-  client.addExtension({
-    outgoing: function(message, callback) {
-      message.ext = message.ext || {};
-      message.ext.csrfToken = $('meta[name=csrf-token]').attr('content');
-      return callback(message);
-    }
-  });
-
-  $(function() {
-    //$('.panel-body').animate({ scrollTop: $('.panel-body')[0].scrollHeight}, 1000);
-    $('#new_message').submit(function() {
-      return $(this).find("input[type='submit']").val('Sending...').prop('disabled', true);
-    });
-    try {
-      client.unsubscribe('/chats/global');
-    }
-    catch (_error) {
-      if (typeof console !== "undefined" && console !== null) {
-        console.log("Can't unsubscribe.");
-      }
-    }
-    client.subscribe('/chats/global', function(payload) {
-      if (payload.message) {
-        $('.media-list').prepend(payload.message);
-        //$('.panel-body').animate({ scrollTop: $('.panel-body')[0].scrollHeight}, 1000);
-      }
-    });
-  });
-<% end %>
 

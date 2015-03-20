@@ -1,8 +1,14 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :confirmable, :lockable
+  devise  :database_authenticatable,
+          :registerable,
+          :recoverable,
+          :lockable
+          # :trackable
+          #:rememberable,
+          #:confirmable,
+          #:validatable
 
   validates_presence_of :email
   validates_uniqueness_of :email
@@ -18,23 +24,24 @@ class User < ActiveRecord::Base
   validates_format_of :password, with: /\A(?=.*?[A-Z]).{8,}\z/, message: 'is missing at least one uppercase character', if: :password_required?
   validates_format_of :password, with: /\A(?=.*?[0-9]).{8,}\z/, message: 'is missing at least one digit', if: :password_required?
 
-  has_many :chat_users
-  has_many :chats, through: :chat_users
+  #has_many :chat_users
+  #has_many :chats, through: :chat_users
 
-  has_many :messages, dependent: :destroy
+  #has_many :messages, dependent: :destroy
 
   scope :without_user, ->(user) { where.not(id: user) }
 
-  scope :online, -> { where(last_seen: (30.minutes.ago)..Time.now) }
 
-  def stamp!
-    if persisted?
-      if self.last_seen.to_i < (Time.now - 5.minutes).to_i
-        self.last_seen = DateTime.now
-        self.save!
-      end
-    end
-  end
+  #scope :online, -> { where(last_seen: (30.minutes.ago)..Time.now) }
+
+  # def stamp!
+  #   if persisted?
+  #     if self.last_seen.to_i < (Time.now - 5.minutes).to_i
+  #       self.last_seen = DateTime.now
+  #       self.save!
+  #     end
+  #   end
+  # end
 
   protected
 

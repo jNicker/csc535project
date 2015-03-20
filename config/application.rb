@@ -34,5 +34,10 @@ module Csc535project
     # Faye
     config.middleware.delete Rack::Lock
     config.middleware.use FayeRails::Middleware, mount: '/faye', timeout: 25
+
+    # webfonts
+    # config.assets.paths << Rails.root.join('vendor', 'assets', 'fonts')
+    # config.assets.paths << Rails.root.join('twitter', 'fonts')
+    # app.config.assets.precompile << /\.(?:svg|eot|woff|ttf)$/
   end
 end

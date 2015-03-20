@@ -12,7 +12,11 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require underscore
 //= require twitter/bootstrap
 //= require faye
+//= require moment
 //= require chosen-jquery
+//= require knockout
+//= require knockout.mapping
 //= require_tree .

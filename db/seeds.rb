@@ -13,11 +13,6 @@ user_infos = [
 ]
 user_infos.each do |user_info|
   @user = User.new(user_info)
-  @user.skip_confirmation!
   @user.save!
 end
 
-@chat = User.first.chats.create
-User.without_user(User.first).each do |user|
-  @chat.users << user
-end

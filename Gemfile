@@ -15,9 +15,12 @@ gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
 gem 'therubyracer', platforms: :ruby
 gem 'less-rails'
-gem 'twitter-bootstrap-rails'
+gem 'twitter-bootstrap-rails', github: 'seyhunak/twitter-bootstrap-rails'
 gem 'chosen-rails'
 gem 'sass-rails'
+gem 'knockoutjs-rails'
+gem 'underscore-rails'
+gem 'momentjs-rails'
 
 group :development, :test do
   gem 'pry'
