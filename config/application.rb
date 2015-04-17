@@ -33,7 +33,7 @@ module Csc535project
 
     # Faye
     config.middleware.delete Rack::Lock
-    config.middleware.use FayeRails::Middleware, mount: '/faye', timeout: 25
+    config.middleware.use FayeRails::Middleware, mount: '/faye', timeout: 15
 
     # webfonts
     # config.assets.paths << Rails.root.join('vendor', 'assets', 'fonts')

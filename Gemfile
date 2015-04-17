@@ -22,6 +22,10 @@ gem 'knockoutjs-rails'
 gem 'underscore-rails'
 gem 'momentjs-rails'
 
+group :development do
+  gem 'railroady'
+end
+
 group :development, :test do
   gem 'pry'
   gem 'pry-nav'

@@ -9,19 +9,19 @@
   <div class='col-sm-4'>
     <div class='panel panel-default'> <!-- Whos Online -->
       <div class='panel-heading'>
-        Who's Online
+        Users
       </div>
       <div class='panel-body'>
         <ul class='list-group' data-bind='foreach: online_users'>
-          <li class='list-group-item' data-bind='css: { disabled: is_available() == false } '>
+          <li class='list-group-item' data-bind='css: { disabled: is_online() == false }'>
             <div class='clearfix'>
               <span data-bind='text: username'></span>
               <span class='pull-right'>
-                <a href='#' class='btn btn-default btn-xs'>
+                <a href='#' class='btn btn-default btn-xs' data-toggle='modal' data-bind='attr: { "data-target": ".email-modal-" + id() }'>
                   Email
                   <span class='glyphicon glyphicon-envelope'></span>
                 </a>
-                <a href='#' class='btn btn-default btn-xs' data-bind='click: $parent.startLocalChat, css: { disabled: is_available() == false } '>
+                <a href='#' class='btn btn-default btn-xs' data-bind='click: $parent.clickedStartChat, css: { disabled: is_available() == false || is_online() == false } '>
                   Chat
                   <span class='glyphicon glyphicon-pencil'></span>
                 </a>
@@ -36,10 +36,10 @@
 
 
   <div class='col-sm-8'>
-    <div class='panel panel-default' data-bind="visible: current_user().is_available() === false"> <!-- Chat -->
+    <div class='panel panel-default' data-bind="visible: to_user_id() !== 0"> <!-- Chat -->
       <div class='panel-heading'>
         <span data-bind='text: to_user_name'></span>
-        <span class='glyphicon glyphicon-remove-sign pull-right' data-bind='click: $root.stopLocalChat'></span>
+        <span class='glyphicon glyphicon-remove-sign pull-right' data-bind='click: $root.clickedStopChat'></span>
       </div>
       <div class='panel-body' style="height: 300px; overflow-y: scroll">
         <ul class='media-list' data-bind='foreach: messages'>
@@ -66,5 +66,34 @@
   </div>
 
 </div>
+
+<div data-bind='foreach: online_users'>
+  <div data-bind='attr: { class: "modal fade email-modal-" + id() }' tabindex='-1' role='dialog'>
+    <div class='modal-dialog modal-lg'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <button type='button' class='close' data-dismiss='modal' aria-label='Close'>×</button>
+          <h4 class='modal-title'>Send Email To <span data-bind='text: username'></span></h4>
+        </div>
+        <div class='modal-body'>
+          <form novalidate='novalidate' action='/email' data-remote='true' method='post'>
+            <input type='hidden' name='user[id]' data-bind='value: id'></input>
+            <div class='form-group'>
+              <label>Subject</label>
+              <input class='form-control' required='required' type='text' name='email[subject]'>
+            </div>
+            <div class='form-group'>
+              <label>Body</label>
+              <textarea class='form-control' required='required' name='email[body]' rows='5'></textarea>
+            </div>
+            <button type='submit' class='btn btn-primary'>Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 

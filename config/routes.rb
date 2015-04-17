@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :users, only: [:show]
   resources :home, only: [:index, :create, :destroy]
   resources :welcome, only: [:index]
+  post 'email' => 'home#send_email', as: :send_email
 #  resources :messages
 #  resources :chats
   root 'welcome#index'

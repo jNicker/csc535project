@@ -1,7 +1,7 @@
 class FayeController < FayeRails::Controller
   channel '/signon' do
     monitor :publish do
-      user = User.find(data["id"]).update_attributes(is_available: data["is_available"], is_online: true )
+      user = User.find(data["id"]).update_attributes(is_available: true, is_online: true )
     end
   end
 
@@ -13,7 +13,7 @@ class FayeController < FayeRails::Controller
 
   channel '/startchat' do
     monitor :publish do
-      User.find(data["ids"]).each do |user|
+      User.find(data).each do |user|
         user.update_attribute(:is_available, false)
       end
     end
@@ -21,7 +21,7 @@ class FayeController < FayeRails::Controller
 
   channel '/endchat' do
     monitor :publish do
-      User.find(data["ids"]).each do |user|
+      User.find(data).each do |user|
         user.update_attribute(:is_available, true)
       end
     end
