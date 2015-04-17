@@ -38,14 +38,14 @@
   <div class='col-sm-8'>
     <div class='panel panel-default' data-bind="visible: to_user_id() !== 0"> <!-- Chat -->
       <div class='panel-heading'>
+        Chatting with
         <span data-bind='text: to_user_name'></span>
         <span class='glyphicon glyphicon-remove-sign pull-right' data-bind='click: $root.clickedStopChat'></span>
       </div>
       <div class='panel-body' style="height: 300px; overflow-y: scroll">
         <ul class='media-list' data-bind='foreach: messages'>
           <li class='media'>
-            <span class='media-object pull-left' data-bind='text: from_user'>
-            </span>
+            <span class='media-object pull-left' data-bind='text: from_user'></span>
             <div class='media-body'>
               <span data-bind='text: body'></span>
               <small class='text-muted pull-right' data-bind='text: time_ago'></small>

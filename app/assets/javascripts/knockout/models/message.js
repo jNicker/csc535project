@@ -5,7 +5,6 @@ function Message(message) {
   self.from_user = ko.observable(message.from_user);
   self.created_at = ko.observable(message.created_at);
   self.time_ago = ko.computed(function() {
-    ViewModel.now();
-    return moment(self.created_at).fromNow();
+    return moment(self.created_at()).from(ViewModel.now());
   });
 }

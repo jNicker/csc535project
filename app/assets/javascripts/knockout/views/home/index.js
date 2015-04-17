@@ -79,11 +79,14 @@ $(function() {
       self.to_user_id(user.id());
       console.log("Publish /startchat : ");
       console.log([user.id(), self.current_user().id()]);
+      ViewModel.changeUserAvailability(self.to_user_id(), false);
       client.publish('/startchat', [user.id(), self.current_user().id()], {attempts: 1});
     }
 
     self.clickedStopChat = function() {
+      self.changeUserAvailability(self.to_user_id(), true);
       self.stopChat(true);
+
     }
 
     self.sendMessage = function() {
@@ -123,15 +126,16 @@ $(function() {
     ViewModel.addOrCreateUser(user);
     ViewModel.changeUserAvailability(user.id, false);
     ViewModel.changeUserOnline(user.id, false);
-    if (user.id === ViewModel.to_user_id()) {
-      ViewModel.stopChat(false);
-    }
+    // if (user.id === ViewModel.to_user_id()) {
+    //   ViewModel.stopChat(false);
+    // }
   });
   $(window).unload(function() { // this hits the rails home#destroy and that sends the faye message
     $.ajax({
       url: '/home/' + ViewModel.current_user().id(),
       type: "DELETE",
       async: false,
+      data: { chatting_with: ViewModel.to_user_id() }
     });
   });
 
@@ -179,10 +183,16 @@ $(function() {
   client.subscribe('/' + this_user.username, function(message) {
     console.log("Subscribe /" + this_user.username + " : ");
     console.log(message);
-    ViewModel.messages.shift(new Message(message));
+    ViewModel.messages.unshift(new Message(message));
+    ViewModel.now(new Date());
   });
 
   ko.applyBindings(ViewModel);
+
+  setInterval(function() {
+    ViewModel.now(new Date());
+    console.log("New Now")
+  }, 50 * 1000);
 
 });
 

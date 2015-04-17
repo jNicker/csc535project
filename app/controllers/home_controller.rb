@@ -14,18 +14,27 @@ class HomeController < ApplicationController
 
   def create
     params.permit!
-    message = message_params
-    message['created_at'] = 5.seconds.ago.to_formatted_s(:iso8601)
-    FayeController.publish("/messages/#{message_params['to_user']}", message)
-    FayeController.publish("/messages/#{message_params['from_user']}", message)
+    message = params[:message]
+    message['created_at'] = 15.seconds.ago.to_formatted_s(:iso8601)
+    @from_user = User.find(params[:message][:from_user])
+    message[:from_user] = @from_user.username
+    @to_user = User.find(params[:message][:to_user])
+    message[:to_user] = @to_user.username
+    FayeController.publish("/#{@from_user.username}", message)
+    FayeController.publish("/#{@to_user.username}", message)
     respond_to do |format|
+      format.js
       format.html { render nothing: true, status: 200 }
     end
   end
 
   def destroy
     #lets everyone know the the user is leaving
+    params.permit!
+    @to_user = User.find(params[:chatting_with]) if params[:chatting_with] != "0"
+    @to_user.update_attributes(is_available: true) if @to_user
     current_user.update_attributes(is_online: false, is_available: false)
+    FayeController.publish('/stopchat', [current_user.id, @to_user.id]) if @to_user
     FayeController.publish('/signoff', current_user.attributes.extract!('id'))
     respond_to do |format|
       format.html { render nothing: true, status: 200 }
